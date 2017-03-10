@@ -1,0 +1,10 @@
+﻿  Product.cpp
+  ErrorMessage.cpp
+  Date.cpp
+  AmaProductTester.cpp
+e:\mil5newnew\milestone5\amaproducttester.cpp(48): warning C4101: 'i': unreferenced local variable
+  AmaProduct.cpp
+e:\mil5newnew\milestone5\amaproduct.cpp(75): warning C4800: 'int': forcing value to bool 'true' or 'false' (performance warning)
+  AmaPerishable.cpp
+  Generating Code...
+  MS5.vcxproj -> E:\mil5newnew\Milestone5\Debug\MS5.exe

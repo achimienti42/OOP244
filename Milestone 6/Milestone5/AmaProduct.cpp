@@ -1,0 +1,260 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <cstring>
+#include <string>
+#include "AmaProduct.h"
+#include "Product.h"
+#define TAB '\t'
+
+using namespace std;
+
+namespace sict{
+	AmaProduct::AmaProduct(const char tagfile){
+
+		fileTag_ = tagfile;
+
+	}
+
+	void AmaProduct::settag(const  char tagfile){
+
+		fileTag_ = tagfile;
+
+	}
+
+	const char*AmaProduct::unit()const{
+
+		return unit_;
+
+	}
+
+	void AmaProduct::unit(const char* value){
+
+		strcpy(unit_, value);
+
+	}
+
+
+	std::fstream& AmaProduct::store(std::fstream& file, bool addNewLine)const{
+
+		file << fileTag_ << ',' << sku() << ',' << name() << ',' << price() << ',' << int(taxed()) << ',' << quantity() << ',' << unit() << ',' << qtyNeeded();
+
+		if (addNewLine == true){
+
+			file << endl;
+
+		}
+
+		return file;
+	}
+	std::fstream& AmaProduct::load(std::fstream& file){
+
+		
+		char buf[1001];
+		double dbuf;
+		int ibuf = 0;
+		
+		if (file.is_open()){
+
+			while (file.good() && !file.eof()){
+			
+				
+				file.getline(buf, 7, ',');
+				sku(buf);
+
+				
+				file.getline(buf, 20, ',');
+				name(buf);
+				 
+				
+				file >> dbuf;
+				price(dbuf);
+
+				file.ignore(1, ',');
+				file >> ibuf;
+				taxed(bool(ibuf));
+
+				file.ignore(1, ',');
+				file >> ibuf;
+				quantity(ibuf);
+				
+				file.ignore(1, ',');
+				file.getline(buf, 10, ',');
+				unit(buf);
+				
+			
+				file >> ibuf;
+				qtyNeeded(ibuf);
+
+				buf[0] = 0;
+				break;
+				
+				
+			}
+		}
+
+		return file;
+	}
+	std::ostream& AmaProduct::write(std::ostream& os, bool linear)const{
+
+
+		if (!(err_.isClear())){
+
+			os << err_.message();
+			return os;
+
+		}
+
+		else{
+
+			if (linear){
+				os.setf(std::ios::left);
+				os.unsetf(std::ios::right);
+				os.width(MAX_SKU_LEN);
+				os << sku() << '|';
+
+
+				os.setf(std::ios::left);
+				os.unsetf(std::ios::right);
+				os.width(20);
+				os << name() << '|';
+
+				os.setf(std::ios::right);
+				os.setf(std::ios::fixed);
+				os.width(7);
+				os.precision(2);
+				os << cost() << '|';
+
+				os.setf(std::ios::right);
+				os.width(4);
+				os << quantity() << '|';
+
+				os.unsetf(std::ios::right);
+				os.width(10);
+				os << unit() << '|';
+
+				os.setf(std::ios::right);
+				os.width(4);
+				os << qtyNeeded() << '|';
+
+			}
+			else{
+
+				if (taxed()){
+
+					os << "Sku: " << sku() << endl;
+					os << "Name: " << name() << endl;
+					os << "Price: " << price() << endl;
+					os << "Price after tax: " << cost() << endl;
+					os << "Quantity On Hand: " << quantity() << " " << unit() << endl;
+					os << "Quantity Needed: " << qtyNeeded();
+				}
+
+				else{
+
+					os << "Sku: " << sku() << endl;
+					os << "Name: " << name() << endl;
+					os << "Price: " << price() << endl;
+					os << "Price after tax: " << "N/A" << endl;
+					os << "Quantity On Hand: " << quantity() << " " << unit() << endl;
+					os << "Quantity Needed: " << qtyNeeded() << endl;
+				}
+			}
+
+			return os;
+
+		}
+	}
+	std::istream& AmaProduct::read(std::istream& is){
+
+		if (!(is.fail())){
+			char buf[MAX_SKU_LEN];
+			char YN;
+			double dbuf;
+			int ibuf;
+
+			cout << "Sku: ";
+			is >> buf;
+			sku(buf);
+			cout << "Name: ";
+			is >> buf;
+			name(buf);
+			cout << "Unit: ";
+			is >> buf;
+			unit(buf);
+			cout << "Taxed? (y/n): ";
+			is >> YN;
+
+			if (YN == 'Y' || YN == 'y' || YN == 'N' || YN == 'n'){
+				if (YN == 'Y' || YN == 'y'){
+					taxed(true);
+				}
+				else{
+					taxed(false);
+				}
+
+				cout << "Price: ";
+				is >> dbuf;
+
+				price(dbuf);
+
+				if (!(is.fail())){
+
+					cout << "Quantity On hand: ";
+					is >> ibuf;
+
+					quantity(ibuf);
+
+					if (!(is.fail())){
+
+						cout << "Quantity Needed: ";
+						is >> ibuf;
+
+						qtyNeeded(ibuf);
+
+						if (!(is.fail())){
+
+							err_.clear();
+							return is;
+
+						}
+
+						else{
+
+							err_.message("Invalid Quantity Needed Entry");
+							is.clear();
+							is.setstate(ios::failbit);
+
+						}
+					}
+
+					else{
+
+						err_.message("Invalid Quantity Entry");
+						is.clear();
+						is.setstate(ios::failbit);
+
+					}
+				}
+				else{
+
+					err_.message("Invalid Price Entry");
+					is.clear();
+					is.setstate(ios::failbit);
+
+				}
+			}
+			else{
+
+				err_.message("Only (Y)es or (N)o are acceptable");
+				is.clear();
+				is.setstate(ios::failbit);
+
+			}
+		}
+		else {
+			is.setstate(ios::failbit);
+		}
+
+		return is;
+	}
+
+}
