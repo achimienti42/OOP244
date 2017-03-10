@@ -1,0 +1,28 @@
+1) A virtual function is a memeber function that you expect to be redefined in derived classes.
+When you refer to a derived class object using a pointer or a reference to a base class, you can call
+a virtual function for that object and execute the derived class's version of the function.
+
+2) A virtual function makes its class a polymorphic base class. Derived classes can override
+virtual functions. Virtual functions called through the base class pointers/references will be
+resolved at run-time.
+A pure virtual function always ends in = 0. It implicitly makes the class it is defined for abstract.
+Abstract classes cannot be instatiated. Derived classes need to override/implement all inherited pure virtual functions.
+If they don't they will also become abstract.
+
+3) Abstract classes are classes that contain one or more abstract methods. That being said, they are methods that are declared,
+but contain no implementation. Abstract classes may no be instatiated, and required subclasses to provide implementations
+for the abstract methods. We used it because we create a class heirarchy, with a base called Vehicle. From Vehicle we 
+then have Car, PickupTruck and Sportscar, all of which are Vehicles. They all have in common some things such as 
+Accelerate brake. Yet at the same time there are many things each class does differently according to what they are,
+thus when an operation is performed in a different way it is a good idea to use an abstract method. This is why we used Abstract classes,
+class shared this in common with all children, but each child has requires unique operations performed in different ways.
+
+4) An interface describes the behavior or capabilities of a C++ class without comitting to a particular implementation of that class.
+Interfaces are implementated using abstract classes. The purpose of the abstract class is to provide an appropriate base class
+from which other classes can inherit. Abstract classes cannot be used to instantiate objects and serves only as an interface.
+
+5) An abstract class is not necessarily an interface. An abstract class may have virtual methods, but these methods while inherited
+can be overridden, and had more code added to them, they have the capability to be manipulated more and not act as simply an interface.
+On the other hand an interface is necessarily an abstract class, because in consists of pure virtual methods, making the class
+not instantiable, acting as a base class from which other classes can inherit, serving as an interface. In short an Abstract Class
+can be an Interface, but it isn't necessarily so, an Interface must be an Abstract class and it is necessarily the case.
